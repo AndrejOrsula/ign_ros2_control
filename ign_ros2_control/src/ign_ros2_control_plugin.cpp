@@ -424,6 +424,18 @@ void IgnitionROS2ControlPlugin::Configure(
   std::vector<rclcpp::Parameter> use_sim_time_param = {rclcpp::Parameter("use_sim_time", true)};
   this->dataPtr->node_->set_parameters(use_sim_time_param);
   this->dataPtr->controller_manager_->set_parameters(use_sim_time_param);
+
+  // Set logger level
+  auto ret = rcutils_logging_set_logger_level(this->dataPtr->node_->get_logger().get_name(), RCUTILS_LOG_SEVERITY_WARN);
+  if (ret != RCUTILS_RET_OK) {
+    RCLCPP_ERROR(this->dataPtr->node_->get_logger(), "Error setting severity: %s", rcutils_get_error_string().str);
+    rcutils_reset_error();
+  }
+  ret = rcutils_logging_set_logger_level(this->dataPtr->controller_manager_->get_logger().get_name(), RCUTILS_LOG_SEVERITY_WARN);
+  if (ret != RCUTILS_RET_OK) {
+    RCLCPP_ERROR(this->dataPtr->node_->get_logger(), "Error setting severity: %s", rcutils_get_error_string().str);
+    rcutils_reset_error();
+  }
 }
 
 //////////////////////////////////////////////////
