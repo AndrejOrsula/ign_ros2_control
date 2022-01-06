@@ -418,6 +418,12 @@ void IgnitionROS2ControlPlugin::Configure(
       std::chrono::duration<double>(1.0 / static_cast<double>(cm_update_rate))));
 
   this->dataPtr->entity_ = _entity;
+  
+  // Use simulation time for `ignition_ros2_control` and `controller_manager` ROS 2 nodes
+  // Simulation time of `controller_manager` is automatically forwarded to all spawned controllers
+  std::vector<rclcpp::Parameter> use_sim_time_param = {rclcpp::Parameter("use_sim_time", true)};
+  this->dataPtr->node_->set_parameters(use_sim_time_param);
+  this->dataPtr->controller_manager_->set_parameters(use_sim_time_param);
 }
 
 //////////////////////////////////////////////////
